@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   wallet:
-    image: ghcr.io/amadidominic15/novapay-wallet:latest 
+    image: novapay-wallet:local
     build: .
     ports:
       - "8000:8000"
