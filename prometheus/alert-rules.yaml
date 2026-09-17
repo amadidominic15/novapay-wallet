@@ -1,0 +1,11 @@
+groups:
+  - name: novapay-wallet
+    rules:
+      - alert: HighErrorRate
+        expr: rate(novapay_wallet_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on NovaPay wallet service"
+          description: "Error rate is {{ $value }} errors/sec over the last 5 minutes."

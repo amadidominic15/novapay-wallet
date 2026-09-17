@@ -1,0 +1,11 @@
+.git
+.github
+terraform
+*.md
+docker-compose.yml
+__pycache__
+*.pyc
+.pytest_cache
+.venv
+.env
+*.zip
