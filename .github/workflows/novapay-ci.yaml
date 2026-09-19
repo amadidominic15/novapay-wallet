@@ -77,7 +77,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha
-            type=ref,event=branch
 
       - name: Build image
         uses: docker/build-push-action@v6
