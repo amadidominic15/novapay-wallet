@@ -88,14 +88,24 @@ jobs:
           load: true
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Run Trivy vulnerability scanner (fail on CRITICAL)
-        uses: aquasecurity/trivy-action@0.24.0
+      - name: Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: "table"
           exit-code: "1"
           severity: "CRITICAL"
+          scanners: vuln
           ignore-unfixed: true
+    
+      - name: Trivy secret scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ steps.meta.outputs.tags }}
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL"
+          scanners: secret
 
       - name: Push image (only on main)
         if: github.ref == 'refs/heads/main'
