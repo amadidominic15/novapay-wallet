@@ -37,7 +37,7 @@ jobs:
         run: bandit -r app/ -ll
 
       - name: Dependency vulnerability scan
-        run: pip audit -r app/requirements.txt
+        run: pip-audit -r app/requirements.txt
       
   secret-scan:
     runs-on: ubuntu-latest
