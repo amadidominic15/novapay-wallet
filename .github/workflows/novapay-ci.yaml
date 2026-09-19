@@ -37,7 +37,7 @@ jobs:
         run: bandit -r app/ -ll
 
       - name: Dependency vulnerability scan (safety)
-        run: safety check -r app/requirements.txt --full-report
+        run: safety scan -r app/requirements.txt --full-report
         # safety exits non-zero on critical/high by default in recent versions
 
   secret-scan:
