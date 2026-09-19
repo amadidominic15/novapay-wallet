@@ -36,8 +36,7 @@ resource "aws_security_group" "wallet" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]   # for NIBSS / external APIs
-    description = "HTTPS access to external payment and banking APIs"  
+    cidr_blocks = ["156.0.255.0/24"]   # for NIBSS 
   }
 
   tags = {
