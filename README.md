@@ -41,7 +41,7 @@ docker run --rm novapay-wallet id
 # Expected: uid=10001(novapay) gid=10001(novapay)
 
 # Run
-docker compose up -d
+docker compose up -d wallet
 
 # Test endpoints
 curl localhost:8000/health
@@ -80,9 +80,10 @@ terraform apply
 1. Lint (ruff)
 2. Unit tests (pytest)
 3. SAST (bandit)
-4. Dependency vulnerability scan (safety)
+4. Dependency vulnerability scan
 5. Secret scan (gitleaks) – fails the build
-6. Build & scan container image (Trivy) – fails on CRITICAL
+6. Trivy vulnerability scanner
+6. Trivy secret scanner – fails on CRITICAL
 7. Push to GHCR (main only)
 8. Deploy to staging target (docker-compose)
 
