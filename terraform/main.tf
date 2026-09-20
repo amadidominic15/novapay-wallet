@@ -69,7 +69,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
   secret_id = aws_secretsmanager_secret.db_credentials.id
   secret_string = jsonencode({
     username = "novapay_app"
-    password = "CHANGEME-ROTATE-ME"   # never committed; injected at apply time via TF_VAR
+    password = var.db_password 
   })
 }
 
