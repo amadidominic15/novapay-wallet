@@ -29,14 +29,14 @@ resource "aws_security_group" "wallet" {
     from_port   = 8000
     to_port     = 8000
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]   # only internal
+    cidr_blocks = ["10.0.0.0/16"] # only internal
   }
 
   egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["156.0.255.0/24"]   # for NIBSS 
+    cidr_blocks = ["156.0.255.0/24"] # for NIBSS 
   }
 
   tags = {
@@ -69,7 +69,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
   secret_id = aws_secretsmanager_secret.db_credentials.id
   secret_string = jsonencode({
     username = "novapay_app"
-    password = var.db_password 
+    password = var.db_password
   })
 }
 
@@ -83,7 +83,7 @@ resource "aws_iam_role" "wallet_task" {
       Action = "sts:AssumeRole"
       Effect = "Allow"
       Principal = {
-        Service = "ecs-tasks.amazonaws.com"
+        Service = "ec2.amazonaws.com"
       }
     }]
   })
@@ -116,4 +116,25 @@ resource "aws_iam_role_policy" "wallet_task" {
       }
     ]
   })
+}
+
+# Instance profile (needed for EC2)
+resource "aws_iam_instance_profile" "wallet" {
+  name = "${var.project}-instance-profile"
+  role = aws_iam_role.wallet_task.name
+}
+
+# -----------------------------
+# Compute Target (EC2)
+# -----------------------------
+resource "aws_instance" "wallet" {
+  ami                    = "ami-0c55b159cbfafe1f0" # dummy AMI (LocalStack accepts most values)
+  instance_type          = "t3.micro"
+  subnet_id              = aws_subnet.private.id
+  vpc_security_group_ids = [aws_security_group.wallet.id]
+  iam_instance_profile   = aws_iam_instance_profile.wallet.name
+
+  tags = {
+    Name = "${var.project}-${var.environment}-wallet"
+  }
 }
