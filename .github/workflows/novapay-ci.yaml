@@ -49,11 +49,31 @@ jobs:
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         # This action fails the job when secrets are found
 
+  terraform-security-scan:
+    name: Terraform IaC Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trivy Terraform IaC scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          scan-ref: terraform/
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+
+
   build-and-scan:
-    needs: [lint-and-test, secret-scan]
+    needs: [lint-and-test, secret-scan, terraform-security-scan]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -115,24 +135,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  terraform-security-scan:
-    name: Terraform IaC Security Scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Trivy Terraform IaC scan
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: config
-          scan-ref: terraform/
-          format: table
-          exit-code: "1"
-          severity: HIGH,CRITICAL
-          ignore-unfixed: false
 
   deploy-staging:
     needs: build-and-scan
